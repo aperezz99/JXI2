@@ -1,0 +1,327 @@
+<div id="progressBar"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+      #progressBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #00ff9f, #00e5ff, #7C3AED);
+        z-index: 100;
+        transition: width 0.2s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: 0 2px 8px #00ff9f44;
+      }
+    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JXI2</title>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="text-gray-200 font-sans">
+  <canvas id="gridCanvas"></canvas>
+  <div class="cursor-glow"></div>
+  <div class="bg-animation"></div>
+
+  <section class="hero">
+
+    <!-- NAV -->
+    <nav class="nav">
+      <div class="logo">JXI2</div>
+      <div class="nav-links" style="flex:1; justify-content:center; display:flex; gap:2.5rem;">
+        <a href="#about" class="hover:text-yellow-300 transition-colors">About</a>
+        <a href="#services" class="hover:text-yellow-300 transition-colors">Solutions</a>
+      </div>
+      <a href="#contact" class="contact-btn">Contact Us →</a>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="hero-content">
+      <!-- LEFT TEXT -->
+      <div class="hero-left">
+        <h1>
+          Syncclock Timing Cards<br>
+          &amp; PC Board Solutions
+        </h1>
+        <p>
+          <strong>Reliable</strong> high-precision timing hardware engineered for demanding <strong>computing environments</strong>.<br><br>
+          <strong>JXI2</strong> develops advanced synchronization and timing solutions for embedded and industrial systems requiring accurate and stable time references. Our <strong>Syncclock</strong> product line supports multiple architectures and can be configured to meet specialized application requirements.<br><br>
+          With features including <strong>GPS synchronization </strong> , <strong>OCXO time bases</strong>, and <strong>IRIG-B output</strong>, our solutions provide accurate and dependable system-wide timing.
+        </p>
+        <ul class="hero-list">
+          <li>• Over 40 years of industry expertise</li>
+          <li>• Trusted by aerospace, defense, and research organizations</li>
+          <li>• Manufactured in El Paso, Texas</li>
+          <li>• Available through Brandywine Communications &amp; Brandywine Communications UK</li>
+        </ul>
+      </div>
+      <!-- RIGHT CARD -->
+      <div class="hero-right">
+        <div class="pcb-canvas-wrapper">
+          <canvas id="pcb"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BACKGROUND GLOW -->
+    <div class="gradient-bg"></div>
+
+  </section>
+
+  <!-- ABOUT (updated for PC boards) -->
+  <section id="about" class="about-section">
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      .scene { background: rgba(0, 0, 0, 0.2); border-radius: 14px; padding: 32px 4vw; font-family: sans-serif; }
+      .about-stack { display: flex; flex-direction: column; gap: 28px; }
+      .about-card { background: #0d2b0d; border: 1.5px solid #1a6a1a; border-radius: 14px; padding: 24px 16px; text-align: center; }
+      .about-title { color: #00e5b0; font-size: 1.5rem; font-weight: 700; margin-bottom: 18px; letter-spacing: 0.01em; text-align: center; }
+      .about-text { color: #e0ffe9; font-size: 1rem; line-height: 1.8; margin-bottom: 12px; text-align: center; }
+      .about-text b { color: #fff; font-weight: 700; }
+      .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; justify-content: center; }
+      .badge { display: inline-block; padding: 5px 12px; border-radius: 99px; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.02em; }
+      .bg { background: rgba(170, 255, 0, 0.18); color: #aaff00; border: 1.5px solid rgba(170, 255, 0, 0.32); }
+      .bt { background: rgba(0, 229, 176, 0.18); color: #00e5b0; border: 1.5px solid rgba(0, 229, 176, 0.32); }
+      .facts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+      .fact {
+        background: rgba(13, 43, 13, 0.98);
+        border: 1.5px solid #1aff7a;
+        border-radius: 10px;
+        padding: 14px 10px;
+        box-shadow: 0 1px 6px #00ff9f22;
+      }
+      .fact-num {
+        color: #eaffd0;
+        font-size: 1.45rem;
+        font-weight: 800;
+        text-shadow: 0 1px 3px #00ff9f22, 0 0px 1px #fff;
+        letter-spacing: 0.01em;
+        opacity: 0.98;
+      }
+      .fact-lbl {
+        color: #eaffd0;
+        font-size: 1.05rem;
+        margin-top: 4px;
+        font-weight: 700;
+        text-shadow: 0 1px 4px #00ff9f33;
+        letter-spacing: 0.01em;
+        opacity: 0.98;
+      }
+      .timeline {
+        background: rgba(13, 43, 13, 0.98);
+        border: 1.5px solid #1aff7a;
+        border-radius: 10px;
+        padding: 14px 10px;
+        margin-top: 14px;
+        box-shadow: 0 1px 6px #00ff9f22;
+      }
+      .tl-head {
+        color: #00ffd0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        margin-bottom: 10px;
+        text-shadow: 0 1px 2px #00ff9f22;
+        opacity: 0.98;
+      }
+      .tl-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        border: none !important;
+        box-shadow: none !important;
+        background: none !important;
+      }
+      .tl-item:last-child { margin-bottom: 0; }
+      .tl-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #aaff00;
+        box-shadow: 0 0 3px #aaff0022;
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+      .tl-year {
+        color: #aaff00;
+        font-size: 1.08rem;
+        font-weight: 800;
+        min-width: 34px;
+        text-shadow: 0 1px 2px #aaff0022;
+        opacity: 0.98;
+      }
+      .tl-text {
+        color: #eaffd0;
+        font-size: 1.01rem;
+        line-height: 1.5;
+        font-weight: 700;
+        text-shadow: 0 1px 2px #00ff9f22;
+        opacity: 0.98;
+      }
+      .partner {
+        background: rgba(13, 43, 13, 0.98);
+        border: 1.5px solid #1aff7a;
+        border-radius: 10px;
+        padding: 12px 10px;
+        text-align: center;
+        margin-top: 14px;
+        box-shadow: 0 1px 6px #00ff9f22;
+      }
+      .partner-lbl {
+        color: #00ffd0;
+        font-size: 1.01rem;
+        letter-spacing: 0.07em;
+        margin-bottom: 4px;
+        font-weight: 800;
+        text-shadow: 0 1px 2px #00ff9f22;
+        opacity: 0.98;
+      }
+      .partner-name {
+        color: #eaffd0;
+        font-size: 1.12rem;
+        font-weight: 800;
+        text-shadow: 0 1px 2px #00ff9f22;
+        opacity: 0.98;
+      }
+      @media (max-width: 700px) {
+        .scene { padding: 12px 1vw; }
+        .about-card { padding: 8px 4px; }
+        .facts-grid { grid-template-columns: 1fr; }
+        .timeline, .partner { padding: 6px 4px; }
+        .about-title, .tl-head, .tl-year, .fact-num, .partner-name { font-size: 0.95rem !important; }
+      }
+    </style>
+    <div class="scene">
+      <div class="about-stack">
+        <div class="about-card reveal glow">
+          <div class="about-title glow">About JXI2</div>
+          <div class="about-text reveal"> <b>Established in 1995</b>, JXI2 designs and manufactures the <b>Syncclock</b> line of precision timing cards for embedded and industrial computing systems.</div>
+          <div class="about-text reveal">Our products support multiple platforms including <b>PCIex, VME, AMC, Mini PCIex, PMC and PC104-Plus</b>, with configurable features such as <b>GPS synchronization</b>, <b>OCXO-based</b> timing stability, and <b>IRIG-B output</b> options for high-accuracy applications.</div>
+          <div class="about-text reveal"> <b>JXI2</b> delivers its solutions to aerospace, defense, and research  customers worldwide through <b>Brandywine Communications & Brandywine Communications UK</b>.</div>
+          <div class="badge-row reveal">
+            <span class="badge bg">PCIex</span>
+            <span class="badge bg">VME</span>
+            <span class="badge bg">AMC</span>
+            <span class="badge bg">Mini PCIex</span>
+            <span class="badge bg">PMC</span>
+            <span class="badge bg">PC104-Plus</span>
+          </div>
+        </div>
+        <div>
+          <div class="timeline reveal glow">
+            <div class="tl-head glow">History</div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Late 1990s</div><div class="tl-text">Expanded into VME &amp; defense timing markets</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">2000s</div><div class="tl-text">Launched PCIe &amp; GPS-disciplined product lines</div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Now</div><div class="tl-text">6+ form factors, trusted by aerospace &amp; research orgs worldwide</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-24 px-6 bg-gradient-to-br from-green-900 via-green-800 to-yellow-700/30 text-green-100 border-t border-green-700" data-aos="fade-right">
+    <h2 class="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-green-300 via-yellow-300 to-green-500 bg-clip-text text-transparent">Our Services</h2>
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+      <!-- SERVICE 1 -->
+      <div class="glass-card p-8 rounded-2xl hover:scale-105 transition shadow-lg relative overflow-hidden">
+        <div class="absolute right-4 top-4 opacity-20">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="5" width="30" height="30" rx="6" fill="#11291A" stroke="#A3E635" stroke-width="2"/><circle cx="20" cy="20" r="4" fill="#A3E635"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-3 text-green-300">PCB Design</h3>
+        <p class="text-green-100 mb-4">Custom circuit board design for any application, from concept to schematic to layout.</p>
+        <ul class="text-sm text-yellow-300 space-y-1">
+          <li>✔ Schematic capture</li>
+          <li>✔ Multi-layer design</li>
+          <li>✔ DFM optimization</li>
+        </ul>
+      </div>
+      <!-- SERVICE 2 -->
+      <div class="glass-card p-8 rounded-2xl hover:scale-105 transition shadow-lg relative overflow-hidden">
+        <div class="absolute right-4 top-4 opacity-20">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="5" width="30" height="30" rx="6" fill="#FFD700" stroke="#A3E635" stroke-width="2"/><circle cx="20" cy="20" r="4" fill="#FFD700"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-3 text-yellow-300">Prototyping</h3>
+        <p class="text-green-100 mb-4">Rapid prototyping and assembly to bring your ideas to life, fast and reliably.</p>
+        <ul class="text-sm text-yellow-300 space-y-1">
+          <li>✔ Fast turnaround</li>
+          <li>✔ SMD & THT assembly</li>
+          <li>✔ Testing & validation</li>
+        </ul>
+      </div>
+      <!-- SERVICE 3 -->
+      <div class="glass-card p-8 rounded-2xl hover:scale-105 transition shadow-lg relative overflow-hidden">
+        <div class="absolute right-4 top-4 opacity-20">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="5" width="30" height="30" rx="6" fill="#1A3A1A" stroke="#A3E635" stroke-width="2"/><circle cx="20" cy="20" r="4" fill="#A3E635"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-3 text-green-300">Manufacturing</h3>
+        <p class="text-green-100 mb-4">High-quality, scalable PCB manufacturing with strict quality control and support.</p>
+        <ul class="text-sm text-yellow-300 space-y-1">
+          <li>✔ Small to large batches</li>
+          <li>✔ Quality assurance</li>
+          <li>✔ Global shipping</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-24 px-6 bg-gradient-to-br from-green-900 via-green-800 to-yellow-700/30 text-green-100 border-t border-green-700" data-aos="fade-up">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-6 bg-gradient-to-r from-green-300 via-yellow-300 to-green-500 bg-clip-text text-transparent">Get In Touch</h2>
+      <div class="mb-10 flex flex-col md:flex-row md:justify-center md:gap-16 gap-6 text-left text-green-100">
+        <div>
+          <div class="font-bold text-lg text-yellow-300 mb-1">Location</div>
+          <div>10432 Brian Mooney Ave<br>El Paso, TX 79935</div>
+        </div>
+        <div>
+          <div class="font-bold text-lg text-yellow-300 mb-1 mt-4 md:mt-0">Contact Info</div>
+          <div>Owner: <a href="mailto:johnkates" class="underline hover:text-yellow-200">John Kates</a></div>
+           <div>Email: <a href="mailto:jkates@jxi2.com" class="underline hover:text-yellow-200">jkates@jxi2.com</a></div>
+           <div>Phone: <a href="tel:+19158560241" class="underline hover:text-yellow-200">(915) 856-0241</a></div>
+        </div>
+      </div>
+      <p class="text-green-200 mb-10">
+        Have a project in mind or want to collaborate? Send us a message and our team will get back to you.
+      </p>
+      <form id="contactForm" class="grid gap-6">
+        <input type="text" placeholder="Your Name"
+          class="p-4 bg-green-950 border border-yellow-400 rounded-lg focus:outline-none focus:border-yellow-300 placeholder:text-green-300" required>
+        <input type="email" placeholder="Your Email"
+          class="p-4 bg-green-950 border border-yellow-400 rounded-lg focus:outline-none focus:border-yellow-300 placeholder:text-green-300" required>
+        <textarea rows="5" placeholder="Your Message"
+          class="p-4 bg-green-950 border border-yellow-400 rounded-lg focus:outline-none focus:border-yellow-300 placeholder:text-green-300" required></textarea>
+        <button type="submit"
+          class="bg-yellow-300 text-green-900 py-3 rounded-lg font-semibold hover:scale-105 transition border-2 border-green-400 shadow-lg">
+          Send Message
+        </button>
+      </form>
+      <p id="formMessage" class="mt-6 text-green-300 hidden">
+        Message sent successfully!
+      </p>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/parallax.js"></script>
+  <script src="js/reveal.js"></script>
+  <script>
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const bar = document.getElementById('progressBar');
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = progress + '%';
+    });
+  </script>
+</body>
+</html>
